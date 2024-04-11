@@ -26,7 +26,7 @@ Easily and quickly add new tasks to your to-do list. Simply enter a case descrip
 
 ## Video
 
-[![Example](/assets/ToDoList.png)](https://github.com/RushMarina/Flutter-Dice-Roller-App/assets/150655218/dccc7cad-27b0-4fc8-8f3d-9177c71dd951)
+[![Example](/assets/ToDoList.png)](https://github.com/ROOTZLA/FLUTTER-ToDo-List/assets/148280991/6da5f6a6-b361-4fd3-aaeb-a1402a423338)
 
 ___
 [Up](#anchor)
