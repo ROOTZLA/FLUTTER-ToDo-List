@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,18 +12,30 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String? _userToDo;
-  List todoList = [];
+  List<String> todoList = [];
+  TextEditingController _textFieldController = TextEditingController(); 
 
   @override
   void initState() {
     super.initState();
-    todoList.addAll(['Git Hub', 'Bild', 'README.md']);
+    _loadTodoList();
+  }
+
+  _loadTodoList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      todoList = prefs.getStringList('todoList') ?? []; 
+    });
+  }
+   _saveTodoList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('todoList', todoList);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 187, 233, 251),
+      backgroundColor: const Color.fromARGB(255, 187, 233, 251),
       appBar: AppBar(
         title: const Text('TO DO LIST', style: TextStyle(color: Colors.black54, fontSize: 30.0), ),
         backgroundColor: Colors.white54,
@@ -44,16 +58,13 @@ class _HomeState extends State<Home> {
                   onPressed: () {
                     setState(() {
                       todoList.removeAt(index);
+                      _saveTodoList(); 
                     });
                   },
                 ),
               ),
             ),
             onDismissed: (direction) {
-              //if(direction == DismissDirection.endToStart);
-              setState(() {
-                todoList.removeAt(index);
-              });
             },
           );
         }
@@ -64,6 +75,7 @@ class _HomeState extends State<Home> {
           showDialog(
             context: context, 
             builder: (BuildContext context) {
+              FocusScope.of(context).requestFocus(FocusNode());
               return AlertDialog(
                 title: const Text('Add element'),
                 content: TextField(
@@ -74,11 +86,15 @@ class _HomeState extends State<Home> {
                 actions: [
                   ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        todoList.add(_userToDo);
-                      });
-                      Navigator.of(context).pop();
-                    }, child: const Text('Add')
+                      if (_userToDo != null) {
+                        setState(() {
+                          todoList.add(_userToDo!);
+                          _saveTodoList();
+                        });
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Add'),
                   )
                 ],
               );
